@@ -480,7 +480,7 @@ ggplot(data=plot_df_sa1, aes(x=irr_adj, y=symptom, group=analysis, colour=analys
     panel.grid.minor=element_blank(),
     legend.title=element_blank(),
     legend.position="bottom",
-    legend.direction="horizontal",
+    legend.direction="vertical",
     legend.justification="center",
     legend.text=element_text(size=11, colour="black", face="plain")
   )
