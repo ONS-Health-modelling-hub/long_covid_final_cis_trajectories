@@ -252,9 +252,9 @@ write.csv(emmeans_any, file="filepath/emmeans_any.csv", row.names=FALSE)
 write.csv(emmeans_lim, file="filepath/emmeans_lim.csv", row.names=FALSE)
 
 emmeans_any$outcome <- "Any severity"
-emmeans_lim$outcome <- "Activity limiting"
+emmeans_lim$outcome <- "Activity-limiting"
 emmeans_all <- rbind(emmeans_any, emmeans_lim)
-emmeans_all$outcome <- factor(emmeans_all$outcome, levels=c("Any severity", "Activity limiting"))
+emmeans_all$outcome <- factor(emmeans_all$outcome, levels=c("Any severity", "Activity-limiting"))
 emmeans_all$time <- emmeans_all$time_since_infection / (365.25/12)
 emmeans_all$prevalence <- emmeans_all$prob * 100
 emmeans_all$lcl <- emmeans_all$asymp.LCL * 100
@@ -265,7 +265,7 @@ ggplot(emmeans_all, aes(x=time, y=prevalence)) +
   geom_ribbon(aes(ymin=lcl, ymax=ucl), alpha=0.2, fill="#206095") +
   facet_wrap(~outcome) +
   xlab("Time since infection (months)") +
-  ylab("Prevalence (percent)") +
+  ylab("Prevalence (%)") +
   scale_x_continuous(breaks=seq(0,30,6), limits=c(0,30), expand=c(0,0)) +
   scale_y_continuous(limits=c(0,NA), expand=expansion(mult=c(0,0.05))) +
   theme(
@@ -311,7 +311,7 @@ pairs_lim <- as.data.frame(pairs(emmeans(
 )))
 
 pairs_any$outcome <- "Any severity"
-pairs_lim$outcome <- "Activity limiting"
+pairs_lim$outcome <- "Activity-limiting"
 pairs_all <- rbind(pairs_any, pairs_lim)
 pairs_all <- pairs_all[,c(8,1:3,6:7)]
 write.csv(pairs_all, file="filepath/pairs.csv", row.names=FALSE)
@@ -372,17 +372,17 @@ emmeans_any$model <- "Adjusted"
 emmeans_any$outcome <- "Any severity"
 
 emmeans_lim$model <- "Adjusted"
-emmeans_lim$outcome <- "Activity limiting"
+emmeans_lim$outcome <- "Activity-limiting"
 
 emmeans_any_unadj$model <- "Unadjusted"
 emmeans_any_unadj$outcome <- "Any severity"
 
 emmeans_lim_unadj$model <- "Unadjusted"
-emmeans_lim_unadj$outcome <- "Activity limiting"
+emmeans_lim_unadj$outcome <- "Activity-limiting"
 
 emmeans_all_unadj <- rbind(emmeans_any, emmeans_lim, emmeans_any_unadj, emmeans_lim_unadj)
 emmeans_all_unadj$model <- factor(emmeans_all_unadj$model, levels=c("Unadjusted", "Adjusted"))
-emmeans_all_unadj$outcome <- factor(emmeans_all_unadj$outcome, levels=c("Any severity", "Activity limiting"))
+emmeans_all_unadj$outcome <- factor(emmeans_all_unadj$outcome, levels=c("Any severity", "Activity-limiting"))
 emmeans_all_unadj$time <- emmeans_all_unadj$time_since_infection / (365.25/12)
 emmeans_all_unadj$prevalence <- emmeans_all_unadj$prob * 100
 emmeans_all_unadj$lcl <- emmeans_all_unadj$asymp.LCL * 100
@@ -393,7 +393,7 @@ ggplot(emmeans_all_unadj, aes(x=time, y=prevalence, group=model, colour=model, f
   geom_ribbon(aes(ymin=lcl, ymax=ucl), alpha=0.2, linewidth=NA) +
   facet_wrap(~outcome) +
   xlab("Time since infection (months)") +
-  ylab("Prevalence (percent)") +
+  ylab("Prevalence (%)") +
   scale_x_continuous(breaks=seq(0,30,6), limits=c(0,30), expand=c(0,0)) +
   scale_y_continuous(limits=c(0,NA), expand=expansion(mult=c(0,0.05))) +
   scale_colour_manual(values=c("#206095","#f39431")) +
@@ -409,7 +409,12 @@ ggplot(emmeans_all_unadj, aes(x=time, y=prevalence, group=model, colour=model, f
     strip.text = element_text(colour="black", size=11, face="bold"),
     strip.background = element_blank(),
     plot.margin = margin(0.2,0.5,0.2,0.2,"cm"),
-    panel.spacing = unit(0.75,"cm")
+    panel.spacing = unit(0.75,"cm"),
+    legend.title=element_blank(),
+    legend.position="bottom",
+    legend.direction="horizontal",
+    legend.justification="center",
+    legend.text=element_text(size=11, colour="black", face="plain")
   )
 
 ggsave(filename="filepath/emmeans_unadj.jpg", width=15, height=10, units="cm", dpi=300)
@@ -435,7 +440,7 @@ pairs_lim_unadj <- as.data.frame(pairs(emmeans(
 )))
 
 pairs_any_unadj$outcome <- "Any severity"
-pairs_lim_unadj$outcome <- "Activity limiting"
+pairs_lim_unadj$outcome <- "Activity-limiting"
 pairs_all_unadj <- rbind(pairs_any_unadj, pairs_lim_unadj)
 pairs_all_unadj <- pairs_all_unadj[,c(8,1:3,6:7)]
 write.csv(pairs_all_unadj, file="filepath/pairs_unadj.csv", row.names=FALSE)
@@ -575,21 +580,23 @@ emmeans_sa1_lim <- emmeans.collate(mod_sa1_lim, vcov_sa1_lim, emmeans_wgts$n, mi
 emmeans_sa1_lim <- emmeans_sa1_lim[emmeans_sa1_lim$time_since_infection <= max(dat$time_since_infection[dat$reinfected_to_date==0]),]
 write.csv(emmeans_sa1_lim, file="filepath/emmeans_sa1_lim.csv", row.names=FALSE)
 
+emmeans_any$model <- NULL
 emmeans_any$analysis <- "Main analysis"
 emmeans_any$outcome <- "Any severity"
 
+emmeans_lim$model <- NULL
 emmeans_lim$analysis <- "Main analysis"
-emmeans_lim$outcome <- "Activity limiting"
+emmeans_lim$outcome <- "Activity-limiting"
 
 emmeans_sa1_any$analysis <- "Censor at reinfection"
 emmeans_sa1_any$outcome <- "Any severity"
 
 emmeans_sa1_lim$analysis <- "Censor at reinfection"
-emmeans_sa1_lim$outcome <- "Activity limiting"
+emmeans_sa1_lim$outcome <- "Activity-limiting"
 
 emmeans_sa1 <- rbind(emmeans_any, emmeans_lim, emmeans_sa1_any, emmeans_sa1_lim)
 emmeans_sa1$analysis <- factor(emmeans_sa1$analysis, levels=c("Censor at reinfection", "Main analysis"))
-emmeans_sa1$outcome <- factor(emmeans_sa1$outcome, levels=c("Any severity", "Activity limiting"))
+emmeans_sa1$outcome <- factor(emmeans_sa1$outcome, levels=c("Any severity", "Activity-limiting"))
 emmeans_sa1$time <- emmeans_sa1$time_since_infection / (365.25/12)
 emmeans_sa1$prevalence <- emmeans_sa1$prob * 100
 emmeans_sa1$lcl <- emmeans_sa1$asymp.LCL * 100
@@ -600,7 +607,7 @@ ggplot(emmeans_sa1, aes(x=time, y=prevalence, group=analysis, colour=analysis, f
   geom_ribbon(aes(ymin=lcl, ymax=ucl), alpha=0.2, linewidth=NA) +
   facet_wrap(~outcome) +
   xlab("Time since infection (months)") +
-  ylab("Prevalence (percent)") +
+  ylab("Prevalence (%)") +
   scale_x_continuous(breaks=seq(0,30,6), limits=c(0,30), expand=c(0,0)) +
   scale_y_continuous(limits=c(0,NA), expand=expansion(mult=c(0,0.05))) +
   scale_colour_manual(values=c("#206095","#f39431")) +
@@ -616,7 +623,12 @@ ggplot(emmeans_sa1, aes(x=time, y=prevalence, group=analysis, colour=analysis, f
     strip.text = element_text(colour="black", size=11, face="bold"),
     strip.background = element_blank(),
     plot.margin = margin(0.2,0.5,0.2,0.2,"cm"),
-    panel.spacing = unit(0.75,"cm")
+    panel.spacing = unit(0.75,"cm"),
+    legend.title=element_blank(),
+    legend.position="bottom",
+    legend.direction="horizontal",
+    legend.justification="center",
+    legend.text=element_text(size=11, colour="black", face="plain")
   )
 
 ggsave(filename="filepath/emmeans_sa1.jpg", width=15, height=10, units="cm", dpi=300)
@@ -662,21 +674,23 @@ emmeans_sa2_lim <- emmeans.collate(mod_sa2_lim, vcov_sa2_lim, emmeans_wgts$n, mi
 emmeans_sa2_lim <- emmeans_sa2_lim[emmeans_sa2_lim$time_since_infection >= min(dat$time_since_infection[dat$remote_collection==1]),]
 write.csv(emmeans_sa2_lim, file="filepath/emmeans_sa2_lim.csv", row.names=FALSE)
 
+emmeans_any$model <- NULL
 emmeans_any$analysis <- "Main analysis"
 emmeans_any$outcome <- "Any severity"
 
+emmeans_lim$model <- NULL
 emmeans_lim$analysis <- "Main analysis"
-emmeans_lim$outcome <- "Activity limiting"
+emmeans_lim$outcome <- "Activity-limiting"
 
 emmeans_sa2_any$analysis <- "Remote study assessments only"
 emmeans_sa2_any$outcome <- "Any severity"
 
 emmeans_sa2_lim$analysis <- "Remote study assessments only"
-emmeans_sa2_lim$outcome <- "Activity limiting"
+emmeans_sa2_lim$outcome <- "Activity-limiting"
 
 emmeans_sa2 <- rbind(emmeans_any, emmeans_lim, emmeans_sa2_any, emmeans_sa2_lim)
 emmeans_sa2$analysis <- factor(emmeans_sa2$analysis, levels=c("Remote study assessments only", "Main analysis"))
-emmeans_sa2$outcome <- factor(emmeans_sa2$outcome, levels=c("Any severity", "Activity limiting"))
+emmeans_sa2$outcome <- factor(emmeans_sa2$outcome, levels=c("Any severity", "Activity-limiting"))
 emmeans_sa2$time <- emmeans_sa2$time_since_infection / (365.25/12)
 emmeans_sa2$prevalence <- emmeans_sa2$prob * 100
 emmeans_sa2$lcl <- emmeans_sa2$asymp.LCL * 100
@@ -687,7 +701,7 @@ ggplot(emmeans_sa2, aes(x=time, y=prevalence, group=analysis, colour=analysis, f
   geom_ribbon(aes(ymin=lcl, ymax=ucl), alpha=0.2, linewidth=NA) +
   facet_wrap(~outcome) +
   xlab("Time since infection (months)") +
-  ylab("Prevalence (percent)") +
+  ylab("Prevalence (%)") +
   scale_x_continuous(breaks=seq(0,30,6), limits=c(0,30), expand=c(0,0)) +
   scale_y_continuous(limits=c(0,NA), expand=expansion(mult=c(0,0.05))) +
   scale_colour_manual(values=c("#206095","#f39431")) +
@@ -703,7 +717,12 @@ ggplot(emmeans_sa2, aes(x=time, y=prevalence, group=analysis, colour=analysis, f
     strip.text = element_text(colour="black", size=11, face="bold"),
     strip.background = element_blank(),
     plot.margin = margin(0.2,0.5,0.2,0.2,"cm"),
-    panel.spacing = unit(0.75,"cm")
+    panel.spacing = unit(0.75,"cm"),
+    legend.title=element_blank(),
+    legend.position="bottom",
+    legend.direction="horizontal",
+    legend.justification="center",
+    legend.text=element_text(size=11, colour="black", face="plain")
   )
 
 ggsave(filename="filepath/emmeans_sa2.jpg", width=15, height=10, units="cm", dpi=300)
