@@ -205,8 +205,8 @@ for(i in 1:length(sympts)) {
   desc <- dat2 %>%
     group_by(ever_lc) %>%
     summarise(n_participants = n(),
-              person_symptoms = sum(n_sympt),
-              person_visits = sum(n_visits)) %>%
+              person_symptoms = sum(n_sympt * svywgt),
+              person_visits = sum(n_visits * svywgt)) %>%
     mutate(rate = person_symptoms / person_visits * 1000)
   
   ### unadjusted IRRs
